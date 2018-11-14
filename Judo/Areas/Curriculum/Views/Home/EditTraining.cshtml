@@ -1,0 +1,8 @@
+﻿@model Judo.ViewModels.СurriculumHomeEditTrainingViewModel
+@{
+    ViewData["Title"] = "EditTraining";
+}
+@foreach (var property in this.ViewData.ModelMetadata.Properties.OrderBy(m => m.Order))
+{
+    @Html.Editor(property.PropertyName)
+}

@@ -1,0 +1,46 @@
+﻿@model IDictionary<DateTime, int>
+@{ 
+    string IsWeekend(DayOfWeek day)
+    {
+        if(day == DayOfWeek.Saturday || day == DayOfWeek.Sunday)
+        {
+            return "weekend";
+        }
+        else
+        {
+            return "weekday";
+        }
+    }
+}
+
+<style>
+    .month {
+        padding: 10px;
+        margin: 14px;
+        background-color: #6D6CF7;
+    }
+    .weekday {
+        padding: 10px;
+        margin: 2px;
+        background-color:#D5D7F8;
+    }
+    .weekend {
+        padding: 10px;
+        margin: 2px;
+        background-color: #FF928E;
+    }
+</style>
+
+ <div class='row'>
+     <div class='col-xs-7 text-center month'>Сентябрь</div>
+ </div>
+ @foreach (var date in Model)
+ {
+     @Html.Raw(date.Key.DayOfWeek == DayOfWeek.Monday ? "<div class='row'>" : "");
+        <div class="col-xs-1 text-center @Html.Raw(IsWeekend(date.Key.DayOfWeek))">
+           <a asp-area="Curriculum" asp-controller="Home" asp-action="Details" 
+              asp-route-day="@date.Key.Day"  asp-route-month="@date.Key.Month"  asp-route-year="@date.Key.Year">@date.Key.Day</a>
+        </div>
+     @Html.Raw(date.Key.DayOfWeek == DayOfWeek.Sunday ? "</div>" : "");
+ }
+

@@ -1,0 +1,13 @@
+﻿@model System.Collections.IList
+@{
+    int counter = 0;
+}
+<ul>        
+    @foreach (var m in Model)
+    {
+        this.ViewData["collapseId"] = counter++;
+        <li>
+            @Html.Partial("DisplayTemplates/CollapsedRow", m, this.ViewData)
+        </li>
+    }
+</ul>

@@ -1,0 +1,5 @@
+﻿@model object
+<div class="form-group">
+    @Html.Label(this.ViewData.ModelMetadata.PropertyName,this.ViewData.ModelMetadata.DisplayName)
+    @Html.TextBox(this.ViewData.ModelMetadata.PropertyName, @Html.Value(this.ViewData.ModelMetadata.PropertyName), new { @class = "form-control" } )
+</div>

@@ -1,0 +1,78 @@
+﻿@model System.Collections.IList
+@{
+    var attribute = this.ViewData.ModelMetadata.ContainerType.GetProperty(ViewData.ModelMetadata.PropertyName)
+        .GetCustomAttributes(typeof(Judo.ViewTemplates.TableAttribute), false)
+        .Cast<Judo.ViewTemplates.TableAttribute>().FirstOrDefault();
+
+    //var controller = attribute.Controller??"Home";
+    //var action = attribute.Action??"Index";
+    //var area = attribute.Area??"";
+    //var classes = attribute.Classes??"";
+    var type = attribute.ElementType;
+    var htmlFieldPrefix = this.ViewData.TemplateInfo.HtmlFieldPrefix;
+}
+@*<script src="~/js/ViewTemplates/Table.js"></script>*@
+<table class="table table-hover" data-count="@Model.Count">
+    @{
+        bool isHead = true;
+        int count = 0;
+        foreach (object m in Model)
+        {
+            this.ViewData.TemplateInfo.HtmlFieldPrefix = $"{htmlFieldPrefix}[{count++}]";
+            var element = Convert.ChangeType(m, type);
+            if (isHead)
+            {
+                <tr>
+                    @Html.Partial("DisplayTemplates/ThRow", element, this.ViewData)
+                </tr>
+                isHead = false;
+            }
+                <tr>
+                    @Html.Partial("EditorTemplates/Row", element, this.ViewData)
+                </tr>
+        }
+        this.ViewData.TemplateInfo.HtmlFieldPrefix = $"{htmlFieldPrefix}[default]";
+        var newItem = @Activator.CreateInstance(type);
+        this.ViewData["Editable"] = true;
+        <tr data-table-row-editor="true" class="d-none">@Html.Partial("EditorTemplates/Row", newItem, this.ViewData)</tr>
+        this.ViewData.TemplateInfo.HtmlFieldPrefix = @htmlFieldPrefix;
+    }
+</table>
+<input type="button" data-table-edit="true" value="Добавить"/>
+
+<script>
+    $(document).ready(function () {
+        var $form = $("form", $(this));
+        $("[data-table-edit='true']", $(this)).first().click(function () {
+            $button = $(this);
+            $form = $button.closest("form");
+            $table = $("table", $form);
+            $item = $("[data-table-row-editor='true']", $table);
+            var index = parseInt($table.attr("data-count"));
+            AddItem($form, $item, index);
+            $table.attr("data-count", index + 1);
+
+            //$("[data-table-row-editor='true']", $form).toggleClass("d-none");
+        });
+
+        //$form.on("submit", function () {
+        //    this.
+        //})
+    });
+
+    function AddItem($form, $item, index)
+    {
+        var clone = $item.clone();
+        var $id = $("[name $= '.Id']", clone);
+        $id.val(index + 1);
+        var $fields = $("input", clone);
+        $.each($fields, function (i, val)
+        {
+            $field = $(val);
+            $field.attr("name", $field.attr("name").replace("[default]", "[" + index + "]"));
+        });
+        $("tr", $form).last().after(clone);
+        clone.removeClass("d-none");
+        clone.attr("data-table-row-editor", "");
+    }
+</script>

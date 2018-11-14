@@ -1,0 +1,74 @@
+﻿@model System.Collections.IList
+@{
+    var attribute = this.ViewData.ModelMetadata.ContainerType.GetProperty(ViewData.ModelMetadata.PropertyName)
+        .GetCustomAttributes(typeof(Judo.ViewTemplates.TableAttribute), false)
+        .Cast<Judo.ViewTemplates.TableAttribute>().FirstOrDefault();
+
+    var controller = attribute.Controller ?? "Home";
+    var action = attribute.Action ?? "Index";
+    var area = attribute.Area ?? "";
+    var classes = attribute.Classes ?? "";
+    var type = attribute.ElementType;
+    var editable = attribute.Editable;
+    var guid = @Guid.NewGuid().ToString();
+}
+@*<script src="~/js/ViewTemplates/Table.js"></script>*@
+<form asp-controller="@controller" asp-action="action" asp-area="@area" method="post">
+    <table class="table table-hover" data-guid="@guid">
+        @{
+            bool isHead = true;
+            foreach (object m in Model)
+            {
+                var element = Convert.ChangeType(m, type);
+                var elementId = (element as Judo.ViewModels.Interfaces.IGetId).Id;
+                if (isHead)
+                {
+                    <tr>
+                        <td>
+                            <a href="#" data-table-edit="true" name="edit">Редактировать</a>
+                        </td>
+                        @Html.Partial("DisplayTemplates/ThRow", element, this.ViewData)
+                    </tr>
+                    isHead = false;
+                }
+                <tr data-href='@Url.Action(controller, action, new { area = area, id = elementId })'>
+                    <td></td>
+                    @Html.Partial("DisplayTemplates/Row", element, this.ViewData)
+                </tr>
+            }
+            var newItem = @Activator.CreateInstance(type);
+            this.ViewData["Editable"] = true;
+
+            <tr data-table-row-editor="true" class="d-none" data-guid="guid">
+                <td><input type="submit"></td>
+                @Html.Partial("EditorTemplates/Row", newItem, this.ViewData)
+            </tr>
+        }
+    </table>
+</form>
+
+    <script>
+$(document).ready(function () {
+        $(".clickable-row").click(function () {
+            window.location = $(this).data("href");
+    });
+    //$("table > tbody > tr > td").click(function () {
+    //    $("> div", this).addClass("d-none");
+    //    $("> input", this).removeClass("d-none");
+    //})
+
+    var currentElements = $("[data-guid = '@guid']");
+    $("> tbody > tr > td [data-table-edit='true']", currentElements).first().click(function () {
+        $("> tbody > [data-table-row-editor='true']", currentElements).toggleClass("d-none");
+        $button = $(this);
+        $form = $button.closest("form");
+        if ($button.attr('data-table-submit') == 'true') {
+            $form.submit();
+        }
+        else {
+            $("div", this).addClass("d-none");
+            $("input", this).removeClass("d-none");
+            $button.attr('data-table-submit', 'true');
+        }
+    });
+    });</script>

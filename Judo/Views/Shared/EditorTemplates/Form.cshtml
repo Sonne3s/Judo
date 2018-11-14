@@ -1,0 +1,18 @@
+﻿@model object
+@{
+    var attribute = this.ViewData.ModelMetadata.ContainerType.GetProperty(ViewData.ModelMetadata.PropertyName)
+        .GetCustomAttributes(typeof(Judo.ViewTemplates.FormAttribute), false)
+        .Cast<Judo.ViewTemplates.FormAttribute>().FirstOrDefault();
+
+    var controller = attribute.Controller ?? "Home";
+    var action = attribute.Action ?? "Index";
+    var area = attribute.Area ?? "";
+    var classes = attribute.Classes ?? "";
+}
+<form asp-controller="@controller" asp-action="@action" asp-area="@area" method="post">
+    @foreach (var property in this.ViewData.ModelMetadata.Properties.OrderBy(m => m.Order))
+    {
+        @Html.Editor(property.PropertyName)
+    }
+    <input type="submit" />
+</form>

@@ -1,0 +1,9 @@
+﻿@model object
+@foreach (var property in this.ViewData.ModelMetadata.Properties.Where(m => m.Order == 0))
+{
+    <td class="d-none">@Html.Editor(property.PropertyName)</td>
+}
+@foreach (var property in this.ViewData.ModelMetadata.Properties.Where(m => m.Order > 0).OrderBy(m => m.Order))
+{
+    <td>@Html.Editor(property.PropertyName)</td>
+}

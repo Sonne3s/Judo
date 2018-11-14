@@ -1,0 +1,13 @@
+﻿@model object
+@{
+    var propertyName = Html.Value(this.ViewData.ModelMetadata.PropertyName);
+}
+<div class="form-group">
+    @Html.Label(propertyName, this.ViewData.ModelMetadata.DisplayName)
+    <select class="form-control" id="@(this.ViewData.ModelMetadata.PropertyName)_Id" name="@(this.ViewData.ModelMetadata.PropertyName).Id">
+        @foreach (var rank in Judo.ViewHelpers.StudentsHelper.GetDans)
+        {
+            <option  value="@rank.Key">@rank.Value</option>    
+        }
+    </select>
+</div>

@@ -1,0 +1,8 @@
+﻿@model Judo.ViewModels.CurriculumHomeExercisesBlockListViewModel
+@{
+    ViewData["Title"] = "Exercises";
+}
+@foreach (var property in this.ViewData.ModelMetadata.Properties.OrderBy(m => m.Order))
+{
+    @Html.Display(property.PropertyName)
+}

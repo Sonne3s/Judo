@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Judo.Constants\Judo.Constants.csproj" />
+    <ProjectReference Include="..\Judo.Models\Judo.Models.csproj" />
+    <ProjectReference Include="..\Judo.Repository\Judo.Repository.Concrete.csproj" />
+    <ProjectReference Include="..\Judo.ViewTemplates\Judo.ViewTemplates.csproj" />
+  </ItemGroup>
+
+</Project>

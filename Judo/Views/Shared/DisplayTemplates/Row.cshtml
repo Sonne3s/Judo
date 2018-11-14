@@ -1,0 +1,8 @@
+﻿@model object
+@foreach (var property in this.ViewData.ModelMetadata.Properties.OrderBy(m => m.Order))
+{
+<td>
+    <div>@Html.Display(property.PropertyName)</div>
+    @Html.Editor(property.PropertyName, new { htmlAttributes = new { @class = "d-none" } })
+</td>
+}

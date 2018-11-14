@@ -1,0 +1,80 @@
+﻿@model object
+@using Judo.Constants.ViewTemplates
+@{
+    var attribute = this.ViewData
+        .ModelMetadata.ContainerType
+        .GetProperty(ViewData.ModelMetadata.PropertyName)
+        .GetCustomAttributes(typeof(Judo.ViewTemplates.DropDownAttribute), false)
+        .Cast<Judo.ViewTemplates.DropDownAttribute>()
+        .FirstOrDefault();
+    var methodName = attribute.Method;
+
+    var id = Guid.NewGuid().GetHashCode() % 200;
+
+    var addItemType = attribute.AddItem;
+    var propertyName = this.ViewData.ModelMetadata.PropertyName;
+    var addItemCustomAction = attribute.EditItemAction;
+    var addItemAction = addItemCustomAction ?? $"Edit{propertyName}";
+
+    IList<SelectListItem> items;
+    if (!string.IsNullOrEmpty(methodName))
+    {
+        //var method = this.ViewContext.ActionDescriptor. Controller.GetType().GetMethod(methodName);
+        var controller = ViewData["Controller"];
+        var method = controller.GetType().GetMethod(methodName);
+        var parameters = attribute.Parameters;
+        //if (attribute.NeedAddRequestTypeIdToParameters)
+        //{
+        //    parameters = Judo.ViewTemplates.Helper.GetTrueParameters(parameters, this.ViewData["RequestTypeId"] as string);
+        //}
+        items = method.Invoke(controller, parameters) as IList<SelectListItem>;
+    }
+    else
+    {
+        items = new List<SelectListItem>();
+    }
+    if (this.Model != null)
+    {
+        var stringModel = this.Model.ToString();
+        var selectedItem = items.FirstOrDefault(m => m.Value == stringModel);
+        if (selectedItem != null)
+        {
+            selectedItem.Selected = true;
+        }
+    }
+}@{int index = 0; }
+<div class="form-group row" data-id="@id"  @((addItemType != Table.NotAddItem) ? $"data-next-index='{(Int32.Parse(items.Where(i => Int32.TryParse(i.Value, out index)).Max(i => i.Value))+1)}'":String.Empty)>
+    @*@Html.Partial("Label")*@
+    <div class="col-lg-8 col-md-7">
+        @if (items != null && (items.Count > 10 || items.Any(m => m.Text != null && m.Text.Length > 80)))
+        {
+            @Html.DropDownList(string.Empty, items, string.Empty, new { @class = "form-control extended-select", data_live_search = "true" })
+        }
+        else
+        {
+            @Html.DropDownList(string.Empty, items, string.Empty, new { @class = "form-control custom-select" })
+        }
+    </div>
+</div>
+
+<script>
+    {
+        let currentSelect =  $("[data-id='@id'] select");
+        //let selectAdd = $("option:contains('Добавить...')", currentSelect);
+        currentSelect.on('change', function (e) {
+            let optionSelected = $('option:selected', this);
+            @if (addItemType == Table.AddItemInModal) {
+                <text>
+                    if (optionSelected.text() === 'Добавить...') {
+                        $("#dropDownModal").attr("data-target-id", @id);
+                        $("#dropDownModal").modal("show");
+                    }
+                </text>
+            }
+            @if (addItemType == Table.AddItemInNewPage)
+            {
+                @:document.location.href = "@Url.Action(addItemAction)";
+            }
+        });
+    }
+</script>

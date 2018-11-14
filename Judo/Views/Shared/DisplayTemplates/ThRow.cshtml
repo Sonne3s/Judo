@@ -1,0 +1,13 @@
+﻿@model object
+
+@foreach (var property in this.ViewData.ModelMetadata.Properties.OrderBy(m => m.Order))
+{
+    var attribute = property.ContainerType
+        .GetProperty(property.PropertyName)
+        .GetCustomAttributes(typeof(Judo.ViewTemplates.ButtonAttribute), false)
+        .Cast<Judo.ViewTemplates.ButtonAttribute>().FirstOrDefault();
+
+    <th>
+        @property.DisplayName
+    </th>
+}

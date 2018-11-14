@@ -1,0 +1,39 @@
+﻿@model int
+@{
+    var attribute = this.ViewData.ModelMetadata.ContainerType.GetProperty(ViewData.ModelMetadata.PropertyName)
+        .GetCustomAttributes(typeof(Judo.ViewTemplates.ButtonAttribute), false)
+        .Cast<Judo.ViewTemplates.ButtonAttribute>().FirstOrDefault();
+
+    var dataAttribute = this.ViewData.ModelMetadata.ContainerType.GetProperty(ViewData.ModelMetadata.PropertyName)
+        .GetCustomAttributes(typeof(Judo.ViewTemplates.DataAttribute), false)
+        .Cast<Judo.ViewTemplates.DataAttribute>();
+
+    var controller = attribute.Controller;
+    var action = attribute.Action;
+    var area = attribute.Area;
+    var classes = attribute.Classes;
+    List<Judo.ViewTemplates.DataAttribute> dVals = dataAttribute.ToList();
+    var dValsStr = "";
+    foreach(var dv in dVals)
+    {
+        dValsStr += $" {dv.Name} = \"{dv.Value}\"";
+    }
+
+
+
+}
+@if (controller != null)
+{
+    if (action != null)
+    {
+        <a asp-controller="@controller" asp-action="@action" asp-area="@area" asp-route-id="@Model" @dValsStr class="btn @classes">@(this.ViewData.ModelMetadata.DisplayName??"Кнопка")</a>
+    }
+    else
+    {
+        <a asp-controller="@controller" asp-action="Index" asp-area="@area" asp-route-id="@Model" @dValsStr class="btn @classes">@(this.ViewData.ModelMetadata.DisplayName??"Кнопка")</a>
+    }
+}
+else
+{
+    <input type="submit" @dValsStr class="btn @classes" value='@(this.ViewData.ModelMetadata.DisplayName??"Кнопка")'>
+}

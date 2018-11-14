@@ -1,0 +1,17 @@
+﻿@model System.Collections.IList
+<table>
+    @{
+        bool isHead = true;
+        foreach (var m in Model)
+        {
+            if (isHead)
+            {
+                <tr>
+                    @Html.Partial("DisplayTemplates/ThRow", m, this.ViewData)
+                </tr>
+                isHead = false;
+            }            
+                @Html.Partial("DisplayTemplates/CollapsedRow", m, this.ViewData)
+        }
+    }
+</table>

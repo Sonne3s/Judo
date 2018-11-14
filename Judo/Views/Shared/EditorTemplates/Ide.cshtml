@@ -1,0 +1,5 @@
+﻿@model object
+@{
+    var propertyName = Html.Value(this.ViewData.ModelMetadata.PropertyName);
+}
+@Html.Hidden(propertyName)

@@ -1,0 +1,11 @@
+﻿@model bool
+@{
+    var propertyName = Html.Value(this.ViewData.ModelMetadata.PropertyName);
+}
+<div class="form-group">
+    @Html.Label(propertyName, this.ViewData.ModelMetadata.DisplayName)
+    <select class="form-control" name="@this.ViewData.ModelMetadata.PropertyName" id="@propertyName">
+        <option value="true">Мужской</option>
+        <option value="false">Женский</option>
+    </select>
+</div>

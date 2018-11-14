@@ -1,0 +1,8 @@
+﻿@model Judo.ViewModels.StudentsPeopleAddPersonViewModel
+@{
+    ViewData["Title"] = "AddPerson";
+}
+@foreach (var property in this.ViewData.ModelMetadata.Properties)
+{
+    @Html.Editor(property.PropertyName)
+}

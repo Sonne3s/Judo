@@ -1,0 +1,13 @@
+﻿@model Judo.ViewModels.StudentsDetailsViewModel
+@{
+    ViewData["Title"] = "Edit";
+}
+@using (Html.BeginForm())
+{
+    @foreach (var property in this.ViewData.ModelMetadata.Properties.OrderBy(m => m.Order))
+    {
+        <div class="editor-field">
+            @Html.Editor(property.PropertyName)
+        </div>
+    }
+}
