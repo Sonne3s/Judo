@@ -48,6 +48,11 @@ namespace Judo.WebUI.Areas.Students.Controllers
             return RedirectToAction("AddGroup");
         }
 
+        public IActionResult GroupsList()
+        {
+            return View();
+        }
+
         public IList<SelectListItem> GetStudents() => People.GetPeopleToString().ToSelectListItem().ToList();
 
         public IList<SelectListItem> GetTrainers() => People.GetPeopleToString().ToSelectListItem().ToList();
